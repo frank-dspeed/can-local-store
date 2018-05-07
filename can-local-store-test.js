@@ -288,7 +288,12 @@ QUnit.test("Support passing undefined as a set to mean passing {} (#54)", functi
 	QUnit.stop();
 
 	connection.updateListData({ data: items.slice(0) }, undefined).then(function(){
-		QUnit.equal(localStorage.getItem("todos/queries"),"[{}]", "contains universal set");
+		QUnit.deepEqual(JSON.parse(localStorage.getItem("todos/queries")),[
+			{
+				query: {},
+				startIdentity: 1
+			}
+		], "contains universal set");
 		QUnit.start();
 	});
 });

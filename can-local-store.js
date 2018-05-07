@@ -57,10 +57,10 @@ module.exports = function memoryStore(baseConnection){
 			localStorage.removeItem(this.name+"/queries");
 			localStorage.removeItem(this.name+"/records");
 		},
-		updateQueriesSync: function(queries){
+		updateQueryDataSync: function(queries){
 			localStorage.setItem(this.name+"/queries", JSON.stringify(queries) );
 		},
-		getQueriesSync: function(){
+		getQueryDataSync: function(){
 			return JSON.parse( localStorage.getItem(this.name+"/queries") ) || [];
 		},
 
@@ -86,6 +86,9 @@ module.exports = function memoryStore(baseConnection){
 			return records;
 		},
 		destroyRecords: function(records) {
+            if(!this._recordsMap) {
+				this.getAllRecords();
+			}
 			canReflect.eachIndex(records, function(record){
 				var id = canReflect.getIdentity(record, this.queryLogic.schema);
 				delete this._recordsMap[id];
@@ -93,6 +96,9 @@ module.exports = function memoryStore(baseConnection){
 			localStorage.setItem(this.name+"/records", JSON.stringify(this._recordsMap) );
 		},
 		updateRecordsSync: function(records){
+            if(!this._recordsMap) {
+				this.getAllRecords();
+			}
 			records.forEach(function(record){
 				var id = canReflect.getIdentity(record, this.queryLogic.schema);
 				this._recordsMap[id] = record;
