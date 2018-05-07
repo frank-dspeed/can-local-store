@@ -47,8 +47,9 @@
  */
 var canReflect = require("can-reflect");
 var makeSimpleStore = require("can-memory-store/make-simple-store");
+var namespace = require("can-namespace");
 
-module.exports = function localStore(baseConnection){
+module.exports = namespace.localStore = function localStore(baseConnection){
     baseConnection.constructor = localStore;
     var behavior = Object.create(makeSimpleStore(baseConnection));
 
