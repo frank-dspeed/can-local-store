@@ -48,8 +48,8 @@
 var canReflect = require("can-reflect");
 var makeSimpleStore = require("can-memory-store/make-simple-store");
 
-module.exports = function memoryStore(baseConnection){
-    baseConnection.constructor = memoryStore;
+module.exports = function localStore(baseConnection){
+    baseConnection.constructor = localStore;
     var behavior = Object.create(makeSimpleStore(baseConnection));
 
     canReflect.assignMap(behavior, {
