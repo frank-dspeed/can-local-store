@@ -334,7 +334,7 @@ QUnit.asyncTest("pagination loses the bigger set (#126)", function(){
 			QUnit.ok(false, "no data");
 			QUnit.start();
 		});
-	}).catch(function(e){
+	}).catch(function(){
 		QUnit.ok(false, "something broke");
 		QUnit.start();
 	});
