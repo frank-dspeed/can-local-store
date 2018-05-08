@@ -33,7 +33,7 @@ QUnit.test("updateListData", function(){
 		}, function(){
 			connection.updateListData({ data: items.slice(0) }, {foo: "bar"})
 				.then(function(){
-
+					
 					connection.getListData({foo: "bar"}).then(function(listData){
 
 						deepEqual(listData.data, items);

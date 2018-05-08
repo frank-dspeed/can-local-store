@@ -76,7 +76,7 @@ module.exports = namespace.localStore = function localStore(baseConnection){
 		getAllRecords: function(){
 			// this._records is a in memory representation so things can be fast
 			if(!this._recordsMap) {
-				var recordsMap = JSON.parse( localStorage.getItem(this.name+"/queries") ) || {};
+				var recordsMap = JSON.parse( localStorage.getItem(this.name+"/records") ) || {};
 				this._recordsMap = recordsMap;
 			}
 
