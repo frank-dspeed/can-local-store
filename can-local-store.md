@@ -45,6 +45,9 @@ todosStore.getQueries()
     instance is used to determine the behavior of [can-local-store.getListData].
   - a unique `name` property used as a key to store data in localStorage.
 
+  It can optionally have:
+  - a `cacheLocalStorageReads` property.  When set to `true`, prevents reading from localStorage and parsing the result on
+    every read.
 
 @body
 
@@ -138,5 +141,22 @@ var todoConnection = connect([
 {
   url: "/services/todos",
   cacheConnection: todosStore
+});
+```
+
+
+## Caching localStorage reads
+
+If your data set is large, you might want to avoid reading and parsing localStorage on every
+access to the local store. To avoid this, you can turn on `cacheLocalStorageReads` like:
+
+
+```js
+var todosStore = localStore({
+    queryLogic: new QueryLogic({
+        identity: ["id"]
+    }),
+    name: "todos",
+    cacheLocalStorageReads: true
 });
 ```

@@ -33,7 +33,7 @@ QUnit.test("updateListData", function(){
 		}, function(){
 			connection.updateListData({ data: items.slice(0) }, {foo: "bar"})
 				.then(function(){
-					
+
 					connection.getListData({foo: "bar"}).then(function(listData){
 
 						deepEqual(listData.data, items);
@@ -345,4 +345,63 @@ QUnit.asyncTest("pagination loses the bigger set (#126)", function(){
 	});
 
 
+});
+
+QUnit.test("clear actually clears when data has been loaded", function(){
+	QUnit.stop();
+	var todosAlgebra = new canSet.Algebra(
+		canSet.props.offsetLimit("offset","limit")
+	);
+
+	var connection = localStore({
+		name: "todos",
+		queryLogic: todosAlgebra,
+		cacheLocalStorageReads: true
+	});
+
+	connection.updateListData(
+		{ data: [{id: 0},{id: 1}] },
+		{}).then(function(){
+
+			return connection.getListData({})
+
+		}).then(function(){
+			return connection.clear();
+		}).then(function(){
+			return connection.getListData({});
+		}).then(function(data){
+			QUnit.ok(false, "should have errored, no data");
+		}, function(){
+			QUnit.ok(true, "should have errored, no data");
+			QUnit.start();
+		})
+});
+
+QUnit.test("localStorage.clear clears data", function(){
+	QUnit.stop();
+	var todosAlgebra = new canSet.Algebra(
+		canSet.props.offsetLimit("offset","limit")
+	);
+
+	var connection = localStore({
+		name: "todos",
+		queryLogic: todosAlgebra
+	});
+
+	connection.updateListData(
+		{ data: [{id: 0},{id: 1}] },
+		{}).then(function(){
+
+			return connection.getListData({})
+
+		}).then(function(){
+			return localStorage.clear();
+		}).then(function(){
+			return connection.getListData({});
+		}).then(function(data){
+			QUnit.ok(false, "should have errored, no data");
+		}, function(){
+			QUnit.ok(true, "should have errored, no data");
+			QUnit.start();
+		})
 });

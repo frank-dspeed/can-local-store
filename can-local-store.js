@@ -1,50 +1,3 @@
-/**
- * @module can-connect/data/localstorage-cache/localstorage-cache localstorage-cache
- * @parent can-connect.behaviors
- * @group can-connect/data/localstorage-cache/localstorage-cache.identifiers 0 identifiers
- * @group can-connect/data/localstorage-cache/localstorage-cache.data-methods 1 data methods
- *
- * Saves raw data in localStorage.
- *
- * @signature `localStorage( baseConnection )`
- *
- *   Creates a cache of instances and a cache of sets of instances that is
- *   accessible to read via [can-connect/data/localstorage-cache/localstorage-cache.getSets],
- *   [can-connect/data/localstorage-cache/localstorage-cache.getData], and [can-connect/data/localstorage-cache/localstorage-cache.getListData].
- *   The caches are updated via [can-connect/data/localstorage-cache/localstorage-cache.createData],
- *   [can-connect/data/localstorage-cache/localstorage-cache.updateData], [can-connect/data/localstorage-cache/localstorage-cache.destroyData],
- *   and [can-connect/data/localstorage-cache/localstorage-cache.updateListData].
- *
- *   [can-connect/data/localstorage-cache/localstorage-cache.createData],
- *   [can-connect/data/localstorage-cache/localstorage-cache.updateData],
- *   [can-connect/data/localstorage-cache/localstorage-cache.destroyData] are able to move items in and out
- *   of sets.
- *
- * @body
- *
- * ## Use
- *
- * `data/localstorage-cache` is often used with a caching strategy like [can-connect/fall-through-cache/fall-through-cache] or
- * [can-connect/cache-requests/cache-requests].  Make sure you configure the connection's [can-connect/data/localstorage-cache/localstorage-cache.name].
- *
- * ```
- * var cacheConnection = connect([
- *   require("can-connect/data/localstorage-cache/localstorage-cache")
- * ],{
- *   name: "todos"
- * });
- *
- * var todoConnection = connect([
- *   require("can-connect/data/url/url"),
- *   require("can-connect/fall-through-cache/fall-through-cache")
- * ],
- * {
- *   url: "/services/todos",
- *   cacheConnection: cacheConnection
- * });
- * ```
- *
- */
 var canReflect = require("can-reflect");
 var makeSimpleStore = require("can-memory-store/make-simple-store");
 var namespace = require("can-namespace");
@@ -57,6 +10,8 @@ module.exports = namespace.localStore = function localStore(baseConnection){
 		clear: function(){
 			localStorage.removeItem(this.name+"/queries");
 			localStorage.removeItem(this.name+"/records");
+            this._recordsMap = null;
+            return Promise.resolve();
 		},
 		updateQueryDataSync: function(queries){
 			localStorage.setItem(this.name+"/queries", JSON.stringify(queries) );
@@ -75,7 +30,8 @@ module.exports = namespace.localStore = function localStore(baseConnection){
 		},
 		getAllRecords: function(){
 			// this._records is a in memory representation so things can be fast
-			if(!this._recordsMap) {
+            // Must turn on `cacheLocalStorageReads` for this to work.
+			if(!this.cacheLocalStorageReads || !this._recordsMap) {
 				var recordsMap = JSON.parse( localStorage.getItem(this.name+"/records") ) || {};
 				this._recordsMap = recordsMap;
 			}
