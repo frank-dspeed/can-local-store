@@ -363,18 +363,18 @@ QUnit.test("clear actually clears when data has been loaded", function(){
 		{ data: [{id: 0},{id: 1}] },
 		{}).then(function(){
 
-			return connection.getListData({})
+			return connection.getListData({});
 
 		}).then(function(){
 			return connection.clear();
 		}).then(function(){
 			return connection.getListData({});
-		}).then(function(data){
+		}).then(function(){
 			QUnit.ok(false, "should have errored, no data");
 		}, function(){
 			QUnit.ok(true, "should have errored, no data");
 			QUnit.start();
-		})
+		});
 });
 
 QUnit.test("localStorage.clear clears data", function(){
@@ -392,16 +392,16 @@ QUnit.test("localStorage.clear clears data", function(){
 		{ data: [{id: 0},{id: 1}] },
 		{}).then(function(){
 
-			return connection.getListData({})
+			return connection.getListData({});
 
 		}).then(function(){
 			return localStorage.clear();
 		}).then(function(){
 			return connection.getListData({});
-		}).then(function(data){
+		}).then(function(){
 			QUnit.ok(false, "should have errored, no data");
 		}, function(){
 			QUnit.ok(true, "should have errored, no data");
 			QUnit.start();
-		})
+		});
 });
